@@ -2,10 +2,12 @@ import React, { useMemo, useState } from "react";
 import ProductCard from "./ProductCard";
 import SearchBox from "./SearchBox";
 import DropDown from "./DropDown";
+import { useLoaderData } from "react-router-dom";
 
 const sortList = ["Popularity", "Price Low to High", "Price High to Low"];
 
-export default function ProductListings({ products }) {
+export default function ProductListings() {
+  const products = useLoaderData();
   const [searchText, setSearchText] = useState("");
   const [selectedSort, setSelectedSort] = useState("Popularity");
   const filterAndSortProducts= useMemo(() => {

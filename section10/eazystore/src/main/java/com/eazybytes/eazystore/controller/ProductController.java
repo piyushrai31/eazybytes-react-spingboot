@@ -22,7 +22,7 @@ public class ProductController {
 
 
     @GetMapping
-    public List<ProductDto> getProducts(){
+    public List<ProductDto> getProducts() throws InterruptedException {
         List<ProductDto> productList = iProductService.getProducts();
         return productList;
     }
