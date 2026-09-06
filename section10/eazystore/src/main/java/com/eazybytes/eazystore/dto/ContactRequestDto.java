@@ -13,5 +13,6 @@ public class ContactRequestDto {
     private Long id;
     private String name;
     private String email;
+    private String mobileNumber;
     private String message;
 }
