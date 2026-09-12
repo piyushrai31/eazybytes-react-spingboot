@@ -5,6 +5,7 @@ import com.eazybytes.eazystore.entity.Product;
 import com.eazybytes.eazystore.repository.ProductRepository;
 import com.eazybytes.eazystore.service.IProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 //@CrossOrigin(origins = "http://localhost:5173/")
+@Slf4j
 public class ProductController {
 
     private final IProductService iProductService;
@@ -24,7 +26,9 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> getProducts() throws InterruptedException {
+
         List<ProductDto> productList = iProductService.getProducts();
+//        log.info("product details {}",productList.stream().collect(Collec));
 //        throw new RuntimeException("Error happened try again!");
         return ResponseEntity.ok(productList);
     }

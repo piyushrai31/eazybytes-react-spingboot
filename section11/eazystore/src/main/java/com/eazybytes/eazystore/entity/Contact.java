@@ -11,7 +11,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "contacts")
-public class Contact {
+public class Contact extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //here we are letting the DB create the IDs
@@ -29,16 +29,4 @@ public class Contact {
 
     @Column(name = "message",nullable = false)
     private String message;
-
-    @Column(name = "created_at",nullable = false)
-    private Instant createdAt;
-
-    @Column(name= "created_by",nullable = false)
-    private String createdBy;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @Column(name = "updated_by")
-    private String updatedBy;
 }

@@ -1,6 +1,7 @@
 package com.eazybytes.eazystore.exception;
 
 import com.eazybytes.eazystore.dto.ErrorResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,10 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGlobalException(Exception exception, WebRequest webRequest){
+        log.error("Logging Exception message {}", exception.getMessage());
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 webRequest.getDescription(false),
                 HttpStatus.INTERNAL_SERVER_ERROR,
@@ -31,6 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,String>> handleValidationExceptions(MethodArgumentNotValidException exception){
+        log.error("Logging Exception message {}", exception.getMessage());
         List<FieldError> fieldErrorList = exception.getFieldErrors();
         Map<String,String> errors = new HashMap<>();
         fieldErrorList.forEach(error ->errors.put(error.getField(),error.getDefaultMessage()));
