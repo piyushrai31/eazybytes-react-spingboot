@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import Price from "./Price";
 import { Link } from "react-router-dom";
+import { CartContext } from "../store/cart-context";
 
 export default function ProductCard({ product }) {
+  const {addToCart} = useContext(CartContext);
   return (
-    <Link to={`/products/${product.productId}`} state={{product}} className="w-72 rounded-md mx-auto border border-gray-300 dark:border-gray-500 shadow-md overflow-hidden flex flex-col bg-white dark:bg-darkbg hover:shadow-lg transition">
-      <div className="relative w-full h-72 border-b border-gray-300 dark:border-gray-500">
+    <div  className="w-72 rounded-md mx-auto border border-gray-300 dark:border-gray-500 shadow-md overflow-hidden flex flex-col bg-white dark:bg-darkbg hover:shadow-lg transition">
+      <Link to={`/products/${product.productId}`} state={{product}} className="relative w-full h-72 border-b border-gray-300 dark:border-gray-500">
         <img
           src={product.imageUrl}
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110"
         />
-      </div>
+      </Link>
       <div className="relative h-48 p-4 flex flex-col font-primary">
         <h2 className="text-xl font-semibold text-primary dark:text-light mb-2">
           {product.name}
@@ -21,8 +23,12 @@ export default function ProductCard({ product }) {
           <div className="bg-lighter dark:bg-dark text-primary dark:text-light font-medium text-sm py-2 px-4 rounded-tl-md">
             <Price currency="$" price={product.price} />
           </div>
+          <button className="bg-primary dark:bg-light text-white dark:text-primary font-medium text-sm py-2 px-4 rounded-md hover:cursor-pointer"
+          onClick={addToCart}>
+            Add to Cart
+          </button>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
