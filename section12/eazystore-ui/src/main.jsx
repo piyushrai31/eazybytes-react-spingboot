@@ -19,7 +19,7 @@ import ErrorPage from "./components/ErrorPage.jsx";
 import { productsLoader } from "./components/Home.jsx";
 import { contactAction } from "./components/Contact.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
-import { CartContext } from "./store/cart-context.jsx";
+import { CartProvider } from "./store/cart-context.jsx";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
@@ -35,15 +35,6 @@ const routeDefinitions = createRoutesFromElements(
 
 const appRouter = createBrowserRouter(routeDefinitions);
 
-const initialCartContext = {
-  cart: [],
-  setCart: () => { },
-  addToCart: () => {
-    console.log("Product added to Cart.")
-   },
-  removeFromCart: () => { },
-  totalQuantity: 0,
-};
 
 
 // const appRouter = createBrowserRouter([
@@ -82,9 +73,9 @@ const initialCartContext = {
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <CartContext value={initialCartContext}>
+    <CartProvider>
       <RouterProvider router={appRouter} />
-    </CartContext>
+    </CartProvider>
     <ToastContainer
       position="top-center"
       autoClose={3000}
