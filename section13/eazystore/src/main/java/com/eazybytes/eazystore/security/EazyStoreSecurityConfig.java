@@ -5,8 +5,17 @@ import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilte
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -40,6 +49,27 @@ public class EazyStoreSecurityConfig {
 //        http.formLogin(withDefaults());
 //        http.httpBasic(withDefaults());
 //        return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder){
+        var daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        var providerManager= new ProviderManager(daoAuthenticationProvider);
+        return providerManager;
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+        var user1 = User.builder().username("piyush").password("$2a$12$sxLwN23IBThkDT9XCI0lcOpx3SjtuEe02K0nq0CLNeOhqwaI21a2y").roles("USER").build();
+        var user2 = User.builder().username("admin").password("$2a$12$GFwlYPxlA0DDDjFxzTqJieShiw9stvR0BB7lWbL24WbenT9kuDkPW").roles("USER","ADMIN").build();
+        return new InMemoryUserDetailsManager(user1, user2);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
