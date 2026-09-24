@@ -10,8 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "customers")
-public class Customer extends BaseEntity{
-
+public class Customer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id", nullable = false)
@@ -36,4 +35,8 @@ public class Customer extends BaseEntity{
     @NotNull
     @Column(name = "password_hash", nullable = false, length = 500)
     private String passwordHash;
+
+    @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
+    private Address address;
+
 }
