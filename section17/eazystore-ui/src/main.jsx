@@ -36,7 +36,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import OrderSuccess from "./components/OrderSuccess.jsx";
 
 const stripePromise = loadStripe(
-  "pk_test_51UKD26Gh8oxvztr5dhmUg8SN6t95nQTce0060chKUzGlZCLZXCYTGqfDTUBZuvRP2u685FTtSOIBKRD4Rqa3kA7S00DT6ielPg"
+  `${import.meta.env.VITE_STRIPE_PUBLISHED_KEY}`
 );
 
 const routeDefinitions = createRoutesFromElements(
