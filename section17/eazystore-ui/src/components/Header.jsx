@@ -22,14 +22,13 @@ export default function Header() {
   const location = useLocation();
   const userMenuRef = useRef();
   const navigate = useNavigate();
-  
+
   const toggleAdminMenu = () => setAdminMenuOpen((prev) => !prev);
   const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
-  
+
   const { totalQuantity } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
   const isAdmin = user?.roles?.includes("ROLE_ADMIN");
-
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");

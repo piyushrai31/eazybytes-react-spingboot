@@ -1,9 +1,6 @@
 package com.eazybytes.eazystore.controller;
 
-import com.eazybytes.eazystore.dto.LoginRequestDto;
-import com.eazybytes.eazystore.dto.LoginResponseDto;
-import com.eazybytes.eazystore.dto.RegisterRequestDto;
-import com.eazybytes.eazystore.dto.UserDto;
+import com.eazybytes.eazystore.dto.*;
 import com.eazybytes.eazystore.entity.Customer;
 import com.eazybytes.eazystore.entity.Role;
 import com.eazybytes.eazystore.repository.CustomerRepository;
@@ -56,6 +53,11 @@ public class AuthController {
             BeanUtils.copyProperties(loggedInUser, userDto);
             userDto.setRoles(authentication.getAuthorities().stream().map(
                     GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
+            if (loggedInUser.getAddress() != null) {
+                AddressDto addressDto = new AddressDto();
+                BeanUtils.copyProperties(loggedInUser.getAddress(), addressDto);
+                userDto.setAddress(addressDto);
+            }
             String jwtToken = jwtUtil.generateJwtToken(authentication);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),

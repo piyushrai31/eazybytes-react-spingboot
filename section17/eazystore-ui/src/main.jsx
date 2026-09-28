@@ -31,6 +31,13 @@ import Orders from "./components/Orders.jsx";
 import AdminOrders from "./components/admin/AdminOrders.jsx";
 import Messages from "./components/admin/Messages.jsx";
 import Register, { registerAction } from "./components/Register.jsx";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import OrderSuccess from "./components/OrderSuccess.jsx";
+
+const stripePromise = loadStripe(
+  "pk_test_51UKD26Gh8oxvztr5dhmUg8SN6t95nQTce0060chKUzGlZCLZXCYTGqfDTUBZuvRP2u685FTtSOIBKRD4Rqa3kA7S00DT6ielPg"
+);
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
@@ -44,6 +51,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/products/:productId" element={<ProductDetail />} />
     <Route element={<ProtectedRoute />}>
       <Route path="/checkout" element={<CheckoutForm />} />
+      <Route path="/order-success" element={<OrderSuccess />} />
       <Route
         path="/profile"
         element={<Profile />}
@@ -64,20 +72,22 @@ const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <CartProvider>
-        <RouterProvider router={appRouter} />
-      </CartProvider>
-    </AuthProvider>
-    <ToastContainer
-      position="top-center"
-      autoClose={3000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      draggable
-      pauseOnHover
-      theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"}
-      transition={Bounce}
-    />
+    <Elements stripe={stripePromise}>
+      <AuthProvider>
+        <CartProvider>
+          <RouterProvider router={appRouter} />
+        </CartProvider>
+      </AuthProvider>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        draggable
+        pauseOnHover
+        theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"}
+        transition={Bounce}
+      />
+    </Elements>
   </StrictMode>
 );
