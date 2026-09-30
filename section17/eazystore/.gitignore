@@ -36,6 +36,9 @@ build/
 ### VS Code ###
 .vscode/
 
+# Environment variables
+.env
+
 # H2 database files
 *.mv.db
 *.trace.db

@@ -1,31 +1,39 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import orderSuccessImg from "../assets/util/order-confirmed.png";
-import PageTitle from "./PageTitle";
+import React from 'react'
+import { useLoaderData } from 'react-router-dom';
+import OrderItem from './OrderItem';
 
-export default function OrderSuccess() {
+
+
+export default function Orders() {
+  const orders = useLoaderData();
   return (
-    <div className="min-h-[852px]  py-12 sm:pt-20 font-primary bg-normalbg dark:bg-darkbg">
-      <div className="max-w-4xl mx-auto px-4">
-        <PageTitle text="Hurray! Order placed successfully" />
-      </div>
-      <div className="text-center text-lg text-gray-600 dark:text-lighter flex flex-col items-center">
-        <p className="max-w-[576px] text-center px-4 mx-auto leading-6 mb-6">
-          Your order has been placed successfully. The items in your order will
-          be delivered within 48 hours.
-        </p>
-        <img
-          src={orderSuccessImg}
-          alt="Order Success"
-          className="w-full max-w-[450px] mx-auto mb-8"
-        />
-        <Link
-          to="/home"
-          className="px-6 py-3 text-white dark:text-black text-xl rounded-md transition duration-200 bg-primary dark:bg-light hover:bg-dark dark:hover:bg-lighter"
-        >
-          Keep Shopping
-        </Link>
+    <div className="min-h-[852px] py-12 bg-normalbg dark:bg-darkbg font-primary">
+      <PageTitle title="My Orders" />
+      <div className="min-h-80 max-w-4xl mx-auto my-8 w-full font-primary">
+        {orders.length > 0 ? (
+          orders.map((order) => (
+            <OrderItem key={order.orderId} order={order} />
+          ))
+        ) : (
+          <p className="text-center font-primary font-bold text-lg text-primary dark:text-light">
+            No Orders found
+          </p>
+        )}
       </div>
     </div>
-  );
+  )
+}
+
+export async function ordersLoader() {
+  try {
+    const response = await apiClient.get("/orders"); // Axios GET Request
+    return response.data;
+  } catch (error) {
+    throw new Response(
+      error.response?.data?.errorMessage ||
+      error.message ||
+      "Failed to fetch Orders. Please try again.",
+      { status: error.status || 500 }
+    );
+  }
 }
