@@ -3,7 +3,7 @@ import React from 'react'
 export default function OrderItem({order}) {
     return (
         <div>
-            console.log(order)
+            console.log(order); 
         </div>
     )
 }

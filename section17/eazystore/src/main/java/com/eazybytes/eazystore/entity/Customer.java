@@ -1,5 +1,6 @@
 package com.eazybytes.eazystore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -40,6 +41,7 @@ public class Customer extends BaseEntity {
     private String passwordHash;
 
     @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
+    @JsonIgnore
     private Address address;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

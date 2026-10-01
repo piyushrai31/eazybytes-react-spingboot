@@ -2,11 +2,13 @@ package com.eazybytes.eazystore.service.impl;
 
 import com.eazybytes.eazystore.constants.ApplicationConstants;
 import com.eazybytes.eazystore.dto.OrderRequestDto;
+import com.eazybytes.eazystore.dto.OrderResponseDto;
 import com.eazybytes.eazystore.entity.Customer;
 import com.eazybytes.eazystore.entity.Order;
 import com.eazybytes.eazystore.entity.OrderItem;
 import com.eazybytes.eazystore.entity.Product;
 import com.eazybytes.eazystore.exception.ResourceNotFoundException;
+import com.eazybytes.eazystore.repository.CustomerRepository;
 import com.eazybytes.eazystore.repository.OrderRepository;
 import com.eazybytes.eazystore.repository.ProductRepository;
 import com.eazybytes.eazystore.service.IOrderService;
@@ -15,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +27,7 @@ public class OrderServiceImpl implements IOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final ProfileServiceImpl profileService;
+    private final CustomerRepository customerRepository;
 
     @Override
     public void createOrder(OrderRequestDto orderRequest) {
@@ -47,6 +51,23 @@ public class OrderServiceImpl implements IOrderService {
         }).collect(Collectors.toList());
         order.setOrderItems(orderItems);
         orderRepository.save(order);
+    }
 
+    @Override
+    public Long getCustomerId() {
+        Customer customer = profileService.getAuthenticatedCustomer();
+        return customer.getCustomerId();
+    }
+
+    @Override
+    public Optional<List<Order>> getOrdersById() {
+        Customer customer = profileService.getAuthenticatedCustomer();
+        return orderRepository.findByCustomer(customer);
+    }
+
+    private OrderResponseDto transformToDTO(Order orders){
+        OrderResponseDto orderResponseDto= new OrderResponseDto();
+        BeanUtils.copyProperties(orders,orderResponseDto);
+        return orderResponseDto;
     }
 }
