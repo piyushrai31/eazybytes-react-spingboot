@@ -7,23 +7,24 @@ import PageTitle from './PageTitle';
 
 
 export default function Orders() {
-  const {createdAt , orderId, orderItems, orderStatus, totalPrice} = useLoaderData();
-  console.log("printing from here")
-  // console.log(orders);
+  const orders = useLoaderData();
+  // console.log("printing from here")
+  // console.log(orders[0]);
+  // console.log("printing the orderitem");
+  // console.log(orders[0].orderItems[0].product.imageUrl);
   return (
     <div className="min-h-[852px] py-12 bg-normalbg dark:bg-darkbg font-primary">
       <PageTitle title="My Orders" />
-      <div className="min-h-80 max-w-4xl mx-auto my-8 w-full font-primary">
-        {/* {orderItems.length > 0 ? (
-          orderItems.map((order) => (
-            <OrderItem key={order.orderItemId} order={order} />
+      <div className="min-h-80 max-w-4xl mx-auto my-8 w-full font-primary">               
+        { orders.length > 0 ? (
+          orders.map((order) => (
+            <OrderItem key={order.orderId} order={order} />
           ))
-        ) : (
+        ) :(
           <p className="text-center font-primary font-bold text-lg text-primary dark:text-light">
             No Orders found
           </p>
-        )}         */}
-        hello
+        )}        
       </div>
     </div>
   )
