@@ -29,4 +29,7 @@ public class Contact extends BaseEntity {
 
     @Column(name = "message",nullable = false)
     private String message;
+
+    @Column(name = "status",nullable = false)
+    private String status;
 }
