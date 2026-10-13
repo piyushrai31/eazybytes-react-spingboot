@@ -1,6 +1,8 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { useLoaderData } from 'react-router-dom';
 import apiClient from '../../api/apiClient';
+import { useRevalidator } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 export async function messagesLoader() {
   try {
@@ -16,7 +18,9 @@ export async function messagesLoader() {
   }
 }
 
+
 export default function Messages() {
+
   const messages = useLoaderData();
   // console.log(messages);
   return (
@@ -51,8 +55,8 @@ export default function Messages() {
               </td>
               <td className="px-4 sm:px-6 py-4 border-1">
                 <button className=" bg-red-500 rounded-xl"
-                onClick={()=>(console.log("hello"))}>
-                  {message.status==="OPEN"?"CLOSE":OPEN}
+                onClick={()=> messageAction(message.id)}>
+                  {message.status}                  
                 </button>
               </td>
             </tr>
@@ -61,4 +65,33 @@ export default function Messages() {
       </table>
     </div >
   )
+}
+
+export async function messageAction(messageDetail) {
+  console.log(messageDetail + " printing from message action");
+  // const data = await message;
+  if(messageDetail===null){
+     toast.failure("No button clicked");
+     return;
+  }
+
+  const messageData = {
+    messageId:messageDetail,
+  };
+  
+  try {
+    const response = await apiClient.put("/admin/messageStatus", messageData);
+    toast.success("Message closed successfully!");
+    return { success: true };
+  } catch (error) {
+    if (error.response?.status === 400) {
+      return { success: false, errors: error.response?.data };
+    }
+    throw new Response(
+      error.response?.data?.errorMessage ||
+        error.message ||
+        "Failed to submit your message. Please try again.",
+      { status: error.status || 500 }
+    );
+  }
 }

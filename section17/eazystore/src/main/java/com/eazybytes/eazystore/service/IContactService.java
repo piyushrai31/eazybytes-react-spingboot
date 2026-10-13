@@ -11,4 +11,5 @@ public interface IContactService {
 
     Boolean saveContact(ContactRequestDto contactRequestDto);
     List<ContactResponseDto> getAllOpenContacts();
+    Boolean closeContact(Long messageId);
 }

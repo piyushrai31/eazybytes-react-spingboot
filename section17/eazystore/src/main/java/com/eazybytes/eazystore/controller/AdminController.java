@@ -2,12 +2,11 @@ package com.eazybytes.eazystore.controller;
 
 
 import com.eazybytes.eazystore.dto.ContactResponseDto;
+import com.eazybytes.eazystore.dto.MessageRequestDto;
 import com.eazybytes.eazystore.service.IContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +26,14 @@ public class AdminController {
     public ResponseEntity<List<ContactResponseDto>> getAllPendingMessages(){
         List<ContactResponseDto> allOpenContacts = iContactService.getAllOpenContacts();
         return ResponseEntity.ok().body(allOpenContacts);
+    }
+
+    @PutMapping("/messageStatus")
+    public Boolean setMessageStatusClosed(@RequestBody MessageRequestDto messageRequestDto){
+        System.out.println("value of request body " + messageRequestDto.messageId());
+        if(messageRequestDto.messageId()==null){
+            return false;
+        }
+        return iContactService.closeContact(messageRequestDto.messageId());
     }
 }

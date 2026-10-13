@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,4 +63,18 @@ public class ContactServiceImpl implements IContactService {
         return contactResponseDto;
     }
 
+    @Override
+    public Boolean closeContact(Long messageId) {
+        try{
+            Optional<Contact> contact = contactRepository.findById(messageId);
+            contact.get().setStatus(ApplicationConstants.CONTACTS_STATUS_CLOSED);
+            contactRepository.save(contact.get());
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 }
