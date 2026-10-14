@@ -70,4 +70,24 @@ public class OrderServiceImpl implements IOrderService {
         BeanUtils.copyProperties(orders,orderResponseDto);
         return orderResponseDto;
     }
+
+    @Override
+    public List<OrderResponseDto> getOrdersByOrderStaus() {
+        Optional<List<Order>> pendingOrders = orderRepository.findByOrderStatus(ApplicationConstants.ORDER_STATUS_CREATED);
+        List<OrderResponseDto> pendingOrdersList = pendingOrders.get().stream().map(this::transformToDTO).collect(Collectors.toList());
+        return pendingOrdersList;
+    }
+
+    @Override
+    public Boolean updateOrderStatus(Long id, String updatedStatus) {
+        try{
+            Optional<Order> order = orderRepository.findById(id);
+            order.get().setOrderStatus(updatedStatus);
+            orderRepository.save(order.get());
+            return true;
+        }catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
