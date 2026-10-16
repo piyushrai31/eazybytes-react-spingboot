@@ -84,6 +84,7 @@ public class OrderServiceImpl implements IOrderService {
             Optional<Order> order = orderRepository.findById(id);
             order.get().setOrderStatus(updatedStatus);
             orderRepository.save(order.get());
+
             return true;
         }catch(Exception e) {
             e.printStackTrace();

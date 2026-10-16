@@ -9,7 +9,7 @@ export default function OrderItem({ order, fromAdmin }) {
         <div>
             <div className="bg-normalbg dark:bg-darkbg font-primary">
                 <table className="w-full">
-                    <tbody class="divide-y divide-primary dark:divide-light">
+                    <tbody className="divide-y divide-primary dark:divide-light">
                         <tr>
                             <td>
                                 {"Order #" + order.orderId}

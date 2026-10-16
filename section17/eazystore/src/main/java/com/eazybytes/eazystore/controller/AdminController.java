@@ -46,15 +46,24 @@ public class AdminController {
     }
 
     @PutMapping("/orderStatus")
-    public Boolean updateOrderStatus(@RequestBody OrderStatusResponseDto orderStatusResponseDto){
+    public ResponseEntity<?> updateOrderStatus(@RequestBody OrderStatusResponseDto orderStatusResponseDto){
         String updatedStatus = orderStatusResponseDto.updatedStatus();
         log.info("response came here with: "+ updatedStatus);
         Long id = orderStatusResponseDto.id();
-        if(updatedStatus== "confirm"){
-            return iOrderService.updateOrderStatus(id, ApplicationConstants.ORDER_STATUS_CONFIRMED);
+        if(updatedStatus.equalsIgnoreCase("confirm")){
+            if(iOrderService.updateOrderStatus(id, ApplicationConstants.ORDER_STATUS_CONFIRMED)){
+                log.info("updated status with: "+ updatedStatus + " for " + id);
+                return ResponseEntity.ok(true);
+            }
+            else return ResponseEntity.internalServerError().body("Update Failed. Please try again!");
+
         }
         else {
-            return iOrderService.updateOrderStatus(id, ApplicationConstants.ORDER_STATUS_CANCELLED);
+             if(iOrderService.updateOrderStatus(id, ApplicationConstants.ORDER_STATUS_CANCELLED)){
+                 log.info("updated status with: "+ updatedStatus + " for " + id);
+                 return ResponseEntity.ok(true);
+             }
+             else return ResponseEntity.internalServerError().body("Update Failed. Please try again!");
         }
     }
 }
