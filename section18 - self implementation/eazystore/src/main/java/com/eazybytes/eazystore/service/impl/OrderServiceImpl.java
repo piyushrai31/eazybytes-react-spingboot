@@ -1,0 +1,94 @@
+package com.eazybytes.eazystore.service.impl;
+
+import com.eazybytes.eazystore.constants.ApplicationConstants;
+import com.eazybytes.eazystore.dto.OrderRequestDto;
+import com.eazybytes.eazystore.dto.OrderResponseDto;
+import com.eazybytes.eazystore.entity.Customer;
+import com.eazybytes.eazystore.entity.Order;
+import com.eazybytes.eazystore.entity.OrderItem;
+import com.eazybytes.eazystore.entity.Product;
+import com.eazybytes.eazystore.exception.ResourceNotFoundException;
+import com.eazybytes.eazystore.repository.CustomerRepository;
+import com.eazybytes.eazystore.repository.OrderRepository;
+import com.eazybytes.eazystore.repository.ProductRepository;
+import com.eazybytes.eazystore.service.IOrderService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderServiceImpl implements IOrderService {
+
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final ProfileServiceImpl profileService;
+    private final CustomerRepository customerRepository;
+
+    @Override
+    public void createOrder(OrderRequestDto orderRequest) {
+        Customer customer = profileService.getAuthenticatedCustomer();
+        // Create Order
+        Order order = new Order();
+        order.setCustomer(customer);
+        BeanUtils.copyProperties(orderRequest, order);
+        order.setOrderStatus(ApplicationConstants.ORDER_STATUS_CREATED);
+        // Map OrderItems
+        List<OrderItem> orderItems = orderRequest.items().stream().map(item -> {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            Product product = productRepository.findById(item.productId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Product", "ProductID",
+                            item.productId().toString()));
+            orderItem.setProduct(product);
+            orderItem.setQuantity(item.quantity());
+            orderItem.setPrice(item.price());
+            return orderItem;
+        }).collect(Collectors.toList());
+        order.setOrderItems(orderItems);
+        orderRepository.save(order);
+    }
+
+    @Override
+    public Long getCustomerId() {
+        Customer customer = profileService.getAuthenticatedCustomer();
+        return customer.getCustomerId();
+    }
+
+    @Override
+    public Optional<List<Order>> getOrdersById() {
+        Customer customer = profileService.getAuthenticatedCustomer();
+        return orderRepository.findByCustomer(customer);
+    }
+
+    private OrderResponseDto transformToDTO(Order orders){
+        OrderResponseDto orderResponseDto= new OrderResponseDto();
+        BeanUtils.copyProperties(orders,orderResponseDto);
+        return orderResponseDto;
+    }
+
+    @Override
+    public List<OrderResponseDto> getOrdersByOrderStaus() {
+        Optional<List<Order>> pendingOrders = orderRepository.findByOrderStatus(ApplicationConstants.ORDER_STATUS_CREATED);
+        List<OrderResponseDto> pendingOrdersList = pendingOrders.get().stream().map(this::transformToDTO).collect(Collectors.toList());
+        return pendingOrdersList;
+    }
+
+    @Override
+    public Boolean updateOrderStatus(Long id, String updatedStatus) {
+        try{
+            Optional<Order> order = orderRepository.findById(id);
+            order.get().setOrderStatus(updatedStatus);
+            orderRepository.save(order.get());
+
+            return true;
+        }catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+}
